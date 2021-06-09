@@ -1,38 +1,73 @@
-.App {
-  text-align: center;
+:root {
+  --primary-color: teal;
+  --site-black: rgb(20,20,20);
+  --site-white: rgb(235,235,235);
+  --site-grey: rgb(75,75,75);
+  --button-size: 70px;
+  --gap-size: 6px;
+  --bezel-size: 40px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html, body {
+  height: 100%;
+  background: var(--primary-color);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+body, .App {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App {
+  height: calc(var(--button-size) * 7 + var(--gap-size)* 6);
+  width: calc(var(--button-size) * 4 + var(--gap-size) * 3 + var(--bezel-size) * 2);
+  background-color: var(--site-black);
+  color: var(--site-white);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  flex-flow: row wrap;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.button-grid, #display-panel{
+  flex: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row wrap;
+  width: calc(var(--button-size) * 4 + var(--gap-size) * 3 + var(--bezel-size));
+}
+
+#equation-display, #display {
+  text-align: right;
+  width: calc(var(--button-size) * 4 + var(--gap-size) * 3 + var(--bezel-size));
+  background-color: var(--site-white);
+}
+
+#equation-display {
+  color: var(--site-grey);
+  margin-bottom: 0;
+  min-height: 21px;
+}
+
+#display {
+  color: var(--site-black);
+  font-size: 2.5em;
+  margin-top: 0;
+  margin-bottom: calc(var(--gap-size) * 0.5);
+  min-height: 53px;
+}
+
+.button {
+  height: var(--button-size);
+  width: var(--button-size);
+  margin: calc(var(--gap-size) * 0.5);
+  background-color: var(--site-grey);
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#add {
+  height: calc(var(--button-size) * 2 + var(--gap-size));
 }
