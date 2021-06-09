@@ -88,7 +88,7 @@ function ButtonGrid(props) {
       } else {
         props.setDisplay(props.display + String(digit));
       }
-    } else if (valLen !== 1 && (typeof props.display[valLen - 2] === "number" || props.display[valLen - 2] === ".")) {
+    } else if (valLen !== 1 && ((/\d/).test(props.display[valLen - 2]) || props.display[valLen - 2] === ".")) {
       props.setDisplay(props.display + String(digit));
     } 
   }
@@ -117,6 +117,11 @@ function ButtonGrid(props) {
         resArr.indexOf('×') : resArr.indexOf('÷')
         : resArr.indexOf('×')
         : resArr.indexOf('÷');
+        // check for negative sign on left
+        if ((/[\d]/).test(resArr[pivot - 3])) {
+          resArr = [...resArr.slice(0, pivot - 2), resArr[pivot - 2].concat(resArr[pivot - 1]), ...resArr.slice(pivot, )];
+        }
+        // check for negative sign on right
         
       }
       return;
