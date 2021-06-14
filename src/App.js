@@ -61,11 +61,9 @@ function ButtonGrid(props) {
 
   const handleDigit = (digit) => {
     if (props.values.includes("=")) {
-      props.setDisplay("0");
+      props.setDisplay(String(digit));
       props.setValues([]);
-    }
-
-    if ((/[^0-9\\.]/).test(props.display)) {
+    } else if ((/[^0-9\\.]/).test(props.display)) {
       if (props.display.length === 1) {
         props.setValues([...props.values, props.display]);
       } else {
@@ -95,13 +93,12 @@ function ButtonGrid(props) {
 
   const handleOperator = (operator) => {
     if (operator === "=") {
-      // TODO
       if (props.values.includes("=")) {
         return;
       }
 
-      let calcArr;
       let resArr;
+      let calcArr;
       if ((/[\d]/).test(props.display)) {
         resArr = [...props.values, props.display];
         calcArr = resArr.slice();
@@ -109,7 +106,37 @@ function ButtonGrid(props) {
         resArr = props.values.slice();
         calcArr = resArr.slice();
       }
-      let result = 0;
+      
+      const negChecker = (pivot, array) => {
+        let resArr = array.slice();
+        // check for negative sign on right
+        if (!((/[\d]/).test(resArr[pivot + 1]))) {
+          resArr = [...resArr.slice(0, pivot + 1), resArr[pivot + 1].concat(resArr[pivot + 2]), ...resArr.slice(pivot + 3, )];
+        }
+        // check for negative sign on left
+        if (!((/[\d]/).test(resArr[pivot - 3]))) {
+          if (resArr.includes(resArr[pivot - 2])) {
+            resArr = [...resArr.slice(0, pivot - 2), resArr[pivot - 2].concat(resArr[pivot - 1]), ...resArr.slice(pivot, )];
+          }
+        }
+        return resArr;
+      }
+
+      const calculate = (pivot, array) => {
+        switch (array[pivot]) {
+          case "×":
+            return [...array.slice(0, pivot - 1), String(Number(array[pivot - 1]) * Number(array[pivot + 1])), ...array.slice(pivot + 2, )];
+          case "÷":
+            return [...array.slice(0, pivot - 1), String(Number(array[pivot - 1]) / Number(array[pivot + 1])), ...array.slice(pivot + 2, )];
+          case "+":
+            return [...array.slice(0, pivot - 1), String(Number(array[pivot - 1]) + Number(array[pivot + 1])), ...array.slice(pivot + 2, )];
+          case "-":
+            return [...array.slice(0, pivot - 1), String(Number(array[pivot - 1]) - Number(array[pivot + 1])), ...array.slice(pivot + 2, )];
+          default:
+            return array;
+        }
+      }
+
       while (resArr.includes('×') || resArr.includes('÷')) {
         let pivot = resArr.indexOf('×') !== -1 ? 
         resArr.indexOf('÷') !== - 1 ?
@@ -117,27 +144,39 @@ function ButtonGrid(props) {
         resArr.indexOf('×') : resArr.indexOf('÷')
         : resArr.indexOf('×')
         : resArr.indexOf('÷');
-        // check for negative sign on left
-        if ((/[\d]/).test(resArr[pivot - 3])) {
-          resArr = [...resArr.slice(0, pivot - 2), resArr[pivot - 2].concat(resArr[pivot - 1]), ...resArr.slice(pivot, )];
-        }
-        // check for negative sign on right
-        
+        resArr = negChecker(pivot, resArr);
+        resArr = calculate(pivot, resArr);
       }
+      while (resArr.includes('+') || resArr.includes('-')) {
+        let pivot = resArr.indexOf('+') !== -1 ? 
+        resArr.indexOf('-') !== - 1 ?
+        resArr.indexOf('+') < resArr.indexOf('-') ?
+        resArr.indexOf('+') : resArr.indexOf('-')
+        : resArr.indexOf('+')
+        : resArr.indexOf('-');
+        resArr = negChecker(pivot, resArr);
+        resArr = calculate(pivot, resArr);
+      }
+      
+      props.setDisplay(resArr[0]);
+      props.setValues([...calcArr, "=", resArr[0]]);
       return;
     } 
-
-    if (props.values.includes("=")) {
-      props.setValues([props.display]);
-    }
     
     if (operator === "AC") {
       props.setDisplay("0");
       props.setValues([]);
     } else if (operator === "C") {
       props.setDisplay("");
+      if (props.values.includes("=")) {
+        props.setValues([]);
+      }
     } else {
-      if ((/[^0-9\\.]/).test(props.display)) {
+      
+      if (props.values.includes("=")) {
+        props.setValues([props.display]);
+        props.setDisplay(operator);
+      } else if ((/[^0-9\\.]/).test(props.display)) {
         if (operator === "-") {
           if (props.display.length === 1) {
             props.setDisplay(props.display + operator);
